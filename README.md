@@ -20,7 +20,7 @@ NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
    ```bash
    powershell -ExecutionPolicy ByPass -File setup.ps1
    ```
-5. If everything goes well, then you are done. Skip to step 4.
+5. If everything goes well, then you are done. Proceed to step 3.
 
 
 STEP 2) Setup CMDER
