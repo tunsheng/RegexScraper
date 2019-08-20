@@ -1,12 +1,17 @@
 
 
 
-Downloading CMDER
+STEP 1) Downloading CMDER
 =================
-NOTICE: Use method B for now, since it is quicker.
+NOTICE: Use method A for now, since it is quicker.
+NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
 
 **Method A:**
-1. Copy **setup.ps1**  to your **Documents** folder [Can be slow]
+1. Download [cmder](https://github.com/cmderdev/cmder/releases/download/v1.3.12/cmder.zip "cmder").
+2. Extract the zip file in your **C:\Users\yourusername\Documents** folder.
+
+**Method B:**
+1. Copy **setup.ps1**  to your **C:\Users\yourusername\Documents** folder [Can be slow]
 2. Run **powershell**
 3. In the **powershell**, type:
    ```bash
@@ -17,17 +22,12 @@ NOTICE: Use method B for now, since it is quicker.
    powershell -ExecutionPolicy ByPass -File setup.ps1
    ```
 
-**Method B:**
-1. Download [cmder](https://github.com/cmderdev/cmder/releases/download/v1.3.12/cmder.zip "cmder").
-2. Extract the zip file in your **Documents** folder.
-
-
-Setup CMDER
+STEP 2) Setup CMDER
 ===========
-NOTICE: if cmder has the CURL functionality, then skip dowloading CURL.
+NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
 
-1. Go to your **cmder** folder. Make a new folder called userApp.
-2. Go into **userApp** folder and start dowloading the files here.
+1. Go to your **cmder** folder. Make a new folder called **userApp**.
+2. Go into **C:\Users\yourusername\Documents\cmder\userApp** folder and start dowloading the files here.
 3. Paste the following links into your browser to download then unzip them.
 
      https://curl.haxx.se/windows/dl-7.65.3_1/curl-7.65.3_1-win64-mingw.zip
@@ -41,8 +41,8 @@ NOTICE: if cmder has the CURL functionality, then skip dowloading CURL.
       http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-dep.zip
       
 5. Rename **wget-1.11.4-1-bin** folder to **wget-1.11.4-1**
-6. Copy everything in the **bin** folder of **wget-1.11.4-1-dep** folder into the **bin** folder of **wget-1.11.4-1**
-7. Open the **user-profile.cmd** file in config folder of cmder folder using notepad. Paste the following at the end of the file.
+6. Copy everything in the **C:\Users\yourusername\Documents\cmder\userApp\wget-1.11.4-1-dep\bin** into the **C:\Users\yourusername\Documents\cmder\userApp\wget-1.11.4-1\bin** folder.
+7. Open the **C:\Users\yourusername\Documents\cmder\config\user-profile.cmd** file using notepad. Paste the following at the end of the file.
 
 ```bash
 set MY_APP_PATH="C:\Users\yourusername\Documents\cmder\userApp\"
@@ -53,17 +53,17 @@ set "PATH=%MY_WGET_PATH%;%MY_TIDY_PATH%;%MY_CURL_PATH%;%PATH%"
 ```
 
 At this point you need to make sure that the following folders exist before proceeeding.
-  - Documents/cmder/myApp/curl-7.65.3-win64-mingw/bin/
-  - Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
-  - Documents/cmder/myApp/wget-1.11.4-1/bin/
+  - C:\Users\yourusername\Documents\cmder\myApp\curl-7.65.3-win64-mingw\bin
+  - C:\Users\yourusername\Documents\cmder\myApp\tidy-5.6.0-vc14-64bw\bin
+  - C:\Users\yourusername\Documents\cmder\myApp\wget-1.11.4-1\bin
 
-RUNNING
+STEP 3) RUNNING
 =======
-
-1. Create a folder in **Documents** folder. For example, name it **ServiceList**.
-2. Go into that folder. Extract **Software.zip** file there.
-3. Create a list of links that u want in a text file called **list.txt**. Enter all the links that you have in separate lines.
-5. Run **cmder** and go into **ServiceList** folder by typing:
+NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
+1. Create a folder in **C:\Users\yourusername\Documents** folder. For example, name it **ServiceList**.
+2. Copy **iterate.sh, getInfo.sh** in the **C:\Users\yourusername\Documents\ServiceList** folder.
+3. In the **C:\Users\yourusername\Documents\ServiceList** folder, create a list of links that you want in a text file called **list.txt**. Enter all the links that you have in separate lines.
+5. Run **cmder.exe** and go into **C:\Users\yourusername\Documents\ServiceList** folder by typing:
     ```bash
     cd C:\Users\yourusername\Documents\ServiceList
     ```
