@@ -10,12 +10,11 @@ NOTICE: Use method B for now, since it is quicker.
 2. Run **powershell**
 3. In the **powershell**, type:
    ```bash
-	   cd Documents
+   cd Documents
    ```
-
 4. Start downloading:
    ```bash
-	   powershell -ExecutionPolicy ByPass -File setup.ps1
+   powershell -ExecutionPolicy ByPass -File setup.ps1
    ```
 
 **Method B:**
@@ -69,16 +68,16 @@ RUNNING
     cd C:\Users\yourusername\Documents\ServiceList
     ```
 
-4) Start running by: (assuming u already created a list of links)
+6. Start running by: (assuming u already created a list of links)
    ```bash
-      sh iterate.sh
+sh iterate.sh
    ```
    If you have a list of html, then u can do:
    ```bash
-      sh iterate.sh --html
+sh iterate.sh --html
    ```
 
    If you have a list with different name (say SHREK.txt):
    ```bash
-      sh iterate.sh -i SHREK.txt
+sh iterate.sh -i SHREK.txt
    ```
