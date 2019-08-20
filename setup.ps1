@@ -150,8 +150,16 @@ if ( [System.IO.File]::Exists($configFile)) {
     Add-Content  $configFile -Value 'set MY_TIDY_PATH=%MY_APP_PATH%"tidy-5.6.0-vc14-64b\bin\"'
     Add-Content  $configFile -Value 'set MY_CURL_PATH=%MY_APP_PATH%"curl-7.65.3_1-win64-mingw\bin\"'
     Add-Content  $configFile -Value 'set "PATH=%MY_WGET_PATH%;%MY_TIDY_PATH%;%MY_CURL_PATH%;%PATH%"'
-} else {
-    Write-Output "Config file does not exist."
+}
+
+$configFile=$myDocumentDir+"\cmder\config\user-profile.cmd"
+if ( [System.IO.File]::Exists($configFile)) {
+    $appPath="set MY_APP_PATH=`""+$myDocumentDir.ToString()+"\cmder\userApp\`""
+    Add-Content  $configFile -Value $appPath
+    Add-Content  $configFile -Value 'set MY_WGET_PATH=%MY_APP_PATH%"wget-1.11.4-1\bin\"'
+    Add-Content  $configFile -Value 'set MY_TIDY_PATH=%MY_APP_PATH%"tidy-5.6.0-vc14-64b\bin\"'
+    Add-Content  $configFile -Value 'set MY_CURL_PATH=%MY_APP_PATH%"curl-7.65.3_1-win64-mingw\bin\"'
+    Add-Content  $configFile -Value 'set "PATH=%MY_WGET_PATH%;%MY_TIDY_PATH%;%MY_CURL_PATH%;%PATH%"'
 }
 
 Write-Output "Done"
