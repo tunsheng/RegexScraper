@@ -107,9 +107,9 @@ cd cmder
 $currentDir=(Get-Location).ToString()
 Write-Output ("Current Path = "+$currentDir.ToString())
 
-Write-Output ("Starting cmder... [Wait for 30s]")
+Write-Output ("Starting cmder... [Wait for 5s]")
 .\Cmder.exe
-Start-Sleep -s 30
+Start-Sleep -s 5
 
 mkdir -f userApp > $null
 cd userApp
@@ -142,7 +142,7 @@ if   (Test-Path -Path wget-1.11.4-1-dep) {
 }
 
 
-$configFile=$myDocumentDir+"\cmder\config\user-profile.cmd"
+$configFile=$myDocumentDir+"\cmder\config\user_profile.cmd"
 if ( [System.IO.File]::Exists($configFile)) {
     $appPath="set MY_APP_PATH=`""+$myDocumentDir.ToString()+"\cmder\userApp\`""
     Add-Content  $configFile -Value $appPath
