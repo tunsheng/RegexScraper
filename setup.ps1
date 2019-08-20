@@ -106,6 +106,11 @@ if  (! (Test-Path -Path cmder)) {
 cd cmder
 $currentDir=(Get-Location).ToString()
 Write-Output ("Current Path = "+$currentDir.ToString())
+
+Write-Output ("Starting cmder... [Wait for 30s]")
+.\Cmder.exe
+Start-Sleep -s 30
+
 mkdir -f userApp > $null
 cd userApp
 $currentDir=(Get-Location).ToString()
@@ -117,12 +122,12 @@ for ($i=0; $i -lt $toolZips.Length; $i++) {
     if  (! [System.IO.File]::Exists($zipPath)) {
         DownloadFile $toolUrls[$i] $toolZips[$i]
     }
-    
+
     if ( [System.IO.File]::Exists($zipPath)) {
             mv -force $zipPath $targetPath
     }
-   
-    
+
+
     $unpackedFolder=$toolZips[$i].ToString() -replace ".zip"
     Write-Output ("Unpacking "+$toolZips[$i].ToString())
     Expand-Archive -Force -Path $toolZips[$i] -DestinationPath $unpackedFolder
