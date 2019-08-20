@@ -99,7 +99,7 @@ if  (! [System.IO.File]::Exists($cmderZip)) {
 }
 
 if  (! (Test-Path -Path cmder)) {
-    Expand-Archive -Path $cmderZip -DestinationPath cmder
+    Expand-Archive -Force -Path $cmderZip -DestinationPath cmder
 }
 
 # Setup bash tools
