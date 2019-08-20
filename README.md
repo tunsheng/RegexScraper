@@ -3,7 +3,6 @@
 
 STEP 1) Downloading CMDER
 =================
-NOTICE: Use method A for now, since it is quicker.
 NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
 
 **Method A:**
@@ -11,16 +10,18 @@ NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
 2. Extract the zip file in your **C:\Users\yourusername\Documents** folder.
 
 **Method B:**
-1. Copy **setup.ps1**  to your **C:\Users\yourusername\Documents** folder [Can be slow]
+1. Copy **setup.ps1**  to your **C:\Users\yourusername\Documents** folder
 2. Run **powershell**
 3. In the **powershell**, type:
    ```bash
-   cd Documents
+   cd C:\Users\yourusername\Documents
    ```
 4. Start downloading:
    ```bash
    powershell -ExecutionPolicy ByPass -File setup.ps1
    ```
+5. If everything goes well, then you are done. Skip to step 4.
+
 
 STEP 2) Setup CMDER
 ===========
