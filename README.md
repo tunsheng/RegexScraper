@@ -16,7 +16,7 @@ NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
    ```bash
    cd C:\Users\yourusername\Documents
    ```
-4. Start downloading:
+4. To start downloading, type:
    ```bash
    powershell -ExecutionPolicy ByPass -File setup.ps1
    ```
