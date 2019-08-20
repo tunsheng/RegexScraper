@@ -10,7 +10,7 @@ NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
 2. Extract the zip file in your **C:\Users\yourusername\Documents** folder.
 
 **Method B:**
-1. Copy **setup.ps1** from the repository or zip file  to your **C:\Users\yourusername\Documents** folder
+1. Copy **setup.ps1** a.k.a windows shell script from the repository  to your **C:\Users\yourusername\Documents** folder
 2. Run **powershell**
 3. In the **powershell**, type:
    ```bash
