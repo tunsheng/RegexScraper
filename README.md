@@ -33,15 +33,13 @@ NOTE: REPLACE yourusername  WITH THE NAME OF YOUR ACCOUNT.
      https://curl.haxx.se/windows/dl-7.65.3_1/curl-7.65.3_1-win64-mingw.zip
      
      https://github.com/htacg/tidy-html5/releases/download/5.6.0/tidy-5.6.0-vc14-64b.zip
-     
-4.  In the same folder, download and extract everything.
 
-      http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-bin.zip
+     http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-bin.zip
       
-      http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-dep.zip
+     http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-dep.zip
       
 5. Rename **wget-1.11.4-1-bin** folder to **wget-1.11.4-1**
-6. Copy everything in the **C:\Users\yourusername\Documents\cmder\userApp\wget-1.11.4-1-dep\bin** into the **C:\Users\yourusername\Documents\cmder\userApp\wget-1.11.4-1\bin** folder.
+6. Copy everything in the **C:\Users\yourusername\Documents\cmder\userApp\wget-1.11.4-1-dep\bin** into the **C:\Users\yourusername\Documents\cmder\userApp\wget-1.11.4-1\bin** folder. Delete **wget-1.11.4-1-dep** folder.
 7. Open the **C:\Users\yourusername\Documents\cmder\config\user-profile.cmd** file using notepad. Paste the following at the end of the file.
 
 ```bash
