@@ -18,6 +18,8 @@ NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 =======
 NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 
+IMPORTANT: Use the link from the ABOUT page of Facebook profile.
+
 1. Create a folder in **C:\Users\yourusername\Documents** folder. For example, name it **ServiceList**.
 2. Copy **iterate.sh, getInfo.sh** to the **C:\Users\yourusername\Documents\ServiceList** folder.
 3. In the **C:\Users\yourusername\Documents\ServiceList** folder, create a list of links that you want in a text file called **list.txt**. Enter all the links that you have in separate lines.
