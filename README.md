@@ -67,17 +67,16 @@ RUNNING
     ```bash
     cd C:\Users\yourusername\Documents\ServiceList
     ```
-
 6. Start running by: (assuming u already created a list of links)
    ```bash
-sh iterate.sh
+   sh iterate.sh
    ```
    If you have a list of html, then u can do:
    ```bash
-sh iterate.sh --html
+   sh iterate.sh --html
    ```
 
    If you have a list with different name (say SHREK.txt):
    ```bash
-sh iterate.sh -i SHREK.txt
+   sh iterate.sh -i SHREK.txt
    ```
