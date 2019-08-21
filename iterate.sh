@@ -26,6 +26,8 @@ do
       printf "\t\t\t Use custom name for list\n"
       printf "\t --html\n"
       printf "\t\t\t Use a list of html\n"
+      printf "\t --win-input\n"
+      printf "\t\t\t Use a windows-style line endings list\n"
       echo
 
       echo "Report any bugs to author by including systematic documentations."
@@ -44,6 +46,9 @@ do
 			;;
     --html )
       IS_HTML=true
+      ;;
+    --win-input )
+      WIN_TO_UNIX=true
       ;;
   esac
   shift
@@ -65,9 +70,21 @@ if [ -z ${DEBUG} ]
 then
   DEBUG=false
 fi
+
+if [ -z ${WIN_TO_UNIX} ]
+then
+  WIN_TO_UNIX=false
+fi
+
 ###############
 # MAIN SCRIPT #
 ###############
+if [ ${WIN_TO_UNIX} = 'true' ]; then
+  mv ${INPUT_LIST} windows_input.txt
+  perl -pe '$_=~s#\r\n#\n#' < windows_input.txt > ${INPUT_LIST}
+  rm windows_input.txt
+fi
+
 i=1
 while read CURRENT_ITEM; do
     if [ -z ${CURRENT_ITEM} ]

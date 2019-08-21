@@ -298,9 +298,10 @@ echo "Detail description = $descriptionDetail" >> ${OUTPUT_FILE}
 if [ $DEBUG = true ]; then echo "DEBUG: CONVERTING TO NOTEPAD FORMAT"; fi
 if [ ${WINDOWS_FILE} = true ]; then
 	# Convert UNIX to Win
-	mv ${OUTPUT_FILE} temporary_html.txt
-	perl -p -e 's/\n/\r\n/' < temporary_html.txt > ${OUTPUT_FILE}
-	rm temporary_html.txt
+	# https://pdes-net.org/x-haui/archives/2010/02/01/howto_convert_windows-style_line_endings_to_unix-style_and_vice_versa/index.html
+	mv ${OUTPUT_FILE} unix_output.txt
+	perl -p -e 's/\n/\r\n/' < unix_output.txt > ${OUTPUT_FILE}
+	rm unix_output.txt
 fi
 rm ${CLEAN_HTML}
 if [ $DEBUG = true ]; then echo "DEBUG: DONE"; fi
