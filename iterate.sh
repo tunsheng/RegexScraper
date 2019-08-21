@@ -88,6 +88,9 @@ while read CURRENT_ITEM; do
       LOG_FILE="log_"${i}".txt"
       CLEAN_LINK=`echo ${CURRENT_ITEM} | sed 's/?ref=page_internal//'`
       if [ $DEBUG = true ]; then
+        printf '%s\n' "DEBUG: Tidy link = ${CLEAN_LINK}" | fold -s
+      fi
+      if [ $DEBUG = true ]; then
         sh getInfo.sh --debug --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}
       else
 			  sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}

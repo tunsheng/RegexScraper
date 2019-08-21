@@ -122,37 +122,15 @@ wgetPath=$basePath/Documents/cmder/userApp/wget-1.11.4-1/bin/
 wgetPathAlt=$basePath/Documents/cmder/myApp/wget-1.11.4-1/bin/
 export PATH=$PATH:$wgetPath:$wgetPathAlt:$tidyPath:$tidyPathAlt
 
-if [ $DEBUG = true ]; then
-	echo
-	echo "DEBUG: Checking 2 modules"
-	echo "=========="
-	echo "DEBUG: 1) Check wget"
-	echo "=========="
-	wget --version
-	echo "=========="
-	echo "DEBUG: 2) Check tidy"
-	echo	"=========="
-	tidy --version
-	echo
+if ! tidy --version &>/dev/null; then
+	printf '%s\n' "(╯°□°)╯︵ tidy not found. Check the path." | fold -s
+exit
 fi
 
-# if ! [[ -d ~/Documents/cmder/*App/curl-7.65.3_1-win64-mingw/bin/ ]]; then
-#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ does not exist." | fold -s
-# 	exit
-# fi
-#
-# if ! [[ -d ~/Documents/cmder/*App/tidy-5.6.0-vc14-64b/bin/ ]]; then
-#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ does not exist." | fold -s
-# 	exit
-# fi
-#
-# if ! [[ -d ~/Documents/cmder/*App/wget-1.11.4-1/bin/ ]]; then
-#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ does not exist." | fold -s
-# 	exit
-# fi
-
-
-
+if ! wget --version &>/dev/null; then
+  printf '%s\n' "(╯°□°)╯︵ wget not found. Check the path." | fold -s
+  exit
+fi
 
 ###############
 # MAIN SCRIPT #
