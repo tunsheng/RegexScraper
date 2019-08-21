@@ -29,11 +29,11 @@ IMPORTANT: Use the link from the ABOUT page of Facebook profile.
     ```
 6. Start running by: (assuming u already created a list of links)
    ```bash
-   sh iterate.sh
+   sh iterate.sh -i list.txt
    ```
    If you have a list of html, then u can do:
    ```bash
-   sh iterate.sh --html
+   sh iterate.sh --html -i list.txt
    ```
    If you have a list with different name (say SHREK.txt):
    ```bash
