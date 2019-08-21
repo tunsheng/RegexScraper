@@ -1,6 +1,8 @@
 SETUP
 =================
-NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
+***NOTE:*** REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
+
+#### FOR WINDOWS
 
 1. Copy **setup.ps1** a.k.a windows shell script from the repository  to your **C:\Users\yourusername\Documents** folder.
 2. Run **powershell** from Windows Start Menu.
@@ -14,11 +16,28 @@ NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
    ```
 5. If everything goes well, then you are done.
 
+
+#### FOR macOS & LINUX
+
+1. Copy **setup.sh** to your **Downloads** folder.
+2. Open **terminal**.
+3. In the **terminal**, type:
+   ```bash
+   cd ~/Downloads
+   ```
+4. To start downloading, in the **terminal** type:
+   ```bash
+   sh setup.sh
+   ```
+5. If everything goes well, then you are done.
+
  RUNNING
 =======
-NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
+***NOTE:*** REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 
-IMPORTANT: Use the link from the ABOUT page of Facebook profile.
+***NOTE:*** For macOS/Linux, replace **C:\Users\yourusername** with just the symbol **~** and **forwardslash (\\)** with **backslash (/)** in the path. Instead of launching **cmder**, you will be launching **terminal**.
+      
+***IMPORTANT:*** Use the link from the ABOUT page of Facebook profile.
 
 1. Create a folder in **C:\Users\yourusername\Documents** folder. For example, name it **ServiceList**.
 2. Copy **iterate.sh, getInfo.sh** to the **C:\Users\yourusername\Documents\ServiceList** folder.
