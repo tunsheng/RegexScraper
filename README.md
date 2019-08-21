@@ -18,6 +18,8 @@ NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 =======
 NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 
+IMPORTANT: Use the link from the ABOUT page of Facebook profile.
+
 1. Create a folder in **C:\Users\yourusername\Documents** folder. For example, name it **ServiceList**.
 2. Copy **iterate.sh, getInfo.sh** to the **C:\Users\yourusername\Documents\ServiceList** folder.
 3. In the **C:\Users\yourusername\Documents\ServiceList** folder, create a list of links that you want in a text file called **list.txt**. Enter all the links that you have in separate lines.
@@ -27,11 +29,11 @@ NOTE: REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
     ```
 6. Start running by: (assuming u already created a list of links)
    ```bash
-   sh iterate.sh
+   sh iterate.sh -i list.txt
    ```
    If you have a list of html, then u can do:
    ```bash
-   sh iterate.sh --html
+   sh iterate.sh --html -i list.txt
    ```
    If you have a list with different name (say SHREK.txt):
    ```bash
