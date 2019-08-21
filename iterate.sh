@@ -1,5 +1,6 @@
 #!/bin/bash -l
 
+
 ################
 # CHECK PREREQ #
 ################
@@ -19,6 +20,8 @@ do
   case "$1" in
     --help | -h)
       printf "Usage: sh iterate.sh [OPTION]...\n"
+      printf "\t --debug\n"
+			printf "\t\t\t Running in debug mode\n"
       printf "\t -i, --input\n"
       printf "\t\t\t Use custom name for list\n"
       printf "\t --html\n"
@@ -32,6 +35,9 @@ do
       echo
       printf '%s\n' "NO WARRANTIES: TO THE EXTENT PERMITTED BY APPLICABLE LAW, NOT ANY PERSON, EITHER EXPRESSLY OR IMPLICITLY, WARRANTS ANY ASPECT OF THIS SOFTWARE OR PROGRAM, INCLUDING ANY OUTPUT OR RESULTS OF THIS SOFTWARE OR PROGRAM. UNLESS AGREED TO IN WRITING. THIS SOFTWARE AND PROGRAM IS BEING PROVIDED \"AS IS\", WITHOUT ANY WARRANTY OF ANY TYPE OR NATURE, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND ANY WARRANTY THAT THIS SOFTWARE OR PROGRAM IS FREE FROM DEFECTS." | fold -s
       exit
+      ;;
+    --debug )
+      DEBUG=true
       ;;
     --input | -i)
       INPUT_LIST=`echo $2 | awk '{$1=$1};1'`
@@ -52,8 +58,13 @@ fi
 if [ -z ${INPUT_LIST} ]
 then
   INPUT_LIST='list.txt'
+  if [ $DEBUG = true ]; then echo "DEBUG: Using default input list: list.txt"; fi
 fi
 
+if [ -z ${DEBUG} ]
+then
+  DEBUG=false
+fi
 ###############
 # MAIN SCRIPT #
 ###############
@@ -67,12 +78,22 @@ while read CURRENT_ITEM; do
 		if [ ${IS_HTML} = 'true' ]; then
 			# USE HTML
       echo "Processing "${CURRENT_ITEM}" in output file "${OUTPUT_FILE}
-			sh getInfo.sh --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE}
+      if [ $DEBUG = true ]; then
+			  sh getInfo.sh --debug --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE}
+      else
+        sh getInfo.sh --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE}
+      fi
 		else
 			# USE LINK
       LOG_FILE="log_"${i}".txt"
       CLEAN_LINK=`echo ${CURRENT_ITEM} | sed 's/?ref=page_internal//'`
-			sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}
+      if [ $DEBUG = true ]; then
+        sh getInfo.sh --debug --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}
+      else
+			  sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}
+      fi
 		fi
+    echo "Entry $i completed."
 		i=$(( $i+1 ))
 done < ${INPUT_LIST}
+echo "Great ! You can now spend more time to XXXX."

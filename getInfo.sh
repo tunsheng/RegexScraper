@@ -1,38 +1,9 @@
 #!/bin/bash -l
 
-################
-# CHECK PREREQ #
-################
-basePath=`echo ~`
-
-# curlPath=$basePath/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/
-# curlPathAlt=$basePath/Documents/cmder/myApp/curl-7.65.3_1-win64-mingw/bin/
-tidyPath=$basePath/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/
-tidyPathAlt=$basePath/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
-wgetPath=$basePath/Documents/cmder/userApp/wget-1.11.4-1/bin/
-wgetPathAlt=$basePath/Documents/cmder/myApp/wget-1.11.4-1/bin/
-export PATH=$PATH:$wgetPath:$wgetPathAlt:$tidyPath:$tidyPathAlt
-
-
 if [ $# -eq 0 ]; then
 		printf '%s\n' "ERROR: try 'sh getInfo.sh --help' for more information" | fold -s
 		exit
 fi
-
-# if ! [[ -d ~/Documents/cmder/*App/curl-7.65.3_1-win64-mingw/bin/ ]]; then
-#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ does not exist." | fold -s
-# 	exit
-# fi
-#
-# if ! [[ -d ~/Documents/cmder/*App/tidy-5.6.0-vc14-64b/bin/ ]]; then
-#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ does not exist." | fold -s
-# 	exit
-# fi
-#
-# if ! [[ -d ~/Documents/cmder/*App/wget-1.11.4-1/bin/ ]]; then
-#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ does not exist." | fold -s
-# 	exit
-# fi
 
 #####################
 # DO NOT EDIT BELOW #
@@ -44,6 +15,8 @@ do
       printf "Usage: sh getInfo.sh [OPTION]...\n"
       printf "\t --clean-input\n"
       printf "\t\t\t Set tidy input html\n"
+			printf "\t --debug\n"
+			printf "\t\t\t Running in debug mode\n"
       printf "\t -i, --input\n"
       printf "\t\t\t Set messy input html\n"
 			printf "\t -log\n"
@@ -68,6 +41,9 @@ do
     --clean-input )
       CLEAN_HTML=`echo $2 | awk '{$1=$1};1'`
       ;;
+		--debug )
+			DEBUG=true
+			;;
 		--input | -i)
 			USER_HTML=`echo $2 | awk '{$1=$1};1'`
 			;;
@@ -89,6 +65,7 @@ do
   esac
   shift
 done
+
 
 # DEFAULT VALUES
 if [ -z ${FB_LINK} ]
@@ -126,6 +103,57 @@ then
   WINDOWS_FILE=false
 fi
 
+if [ -z ${DEBUG} ]
+then
+  DEBUG=false
+fi
+
+if [ $DEBUG = true ]; then echo ; echo "Running getInfo in DEBUG mode"; fi
+################
+# CHECK PREREQ #
+################
+basePath=`echo ~`
+
+# curlPath=$basePath/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/
+# curlPathAlt=$basePath/Documents/cmder/myApp/curl-7.65.3_1-win64-mingw/bin/
+tidyPath=$basePath/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/
+tidyPathAlt=$basePath/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
+wgetPath=$basePath/Documents/cmder/userApp/wget-1.11.4-1/bin/
+wgetPathAlt=$basePath/Documents/cmder/myApp/wget-1.11.4-1/bin/
+export PATH=$PATH:$wgetPath:$wgetPathAlt:$tidyPath:$tidyPathAlt
+
+if [ $DEBUG = true ]; then
+	echo
+	echo "DEBUG: Checking 2 modules"
+	echo "=========="
+	echo "DEBUG: 1) Check wget"
+	echo "=========="
+	wget --version
+	echo "=========="
+	echo "DEBUG: 2) Check tidy"
+	echo	"=========="
+	tidy --version
+	echo
+fi
+
+# if ! [[ -d ~/Documents/cmder/*App/curl-7.65.3_1-win64-mingw/bin/ ]]; then
+#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ does not exist." | fold -s
+# 	exit
+# fi
+#
+# if ! [[ -d ~/Documents/cmder/*App/tidy-5.6.0-vc14-64b/bin/ ]]; then
+#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ does not exist." | fold -s
+# 	exit
+# fi
+#
+# if ! [[ -d ~/Documents/cmder/*App/wget-1.11.4-1/bin/ ]]; then
+#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ does not exist." | fold -s
+# 	exit
+# fi
+
+
+
+
 ###############
 # MAIN SCRIPT #
 ###############
@@ -147,6 +175,8 @@ fi
 
 
 # TIDY UP MESSY HTML
+if [ $DEBUG = true ]; then echo "DEBUG: TIDY UP MESSY HTML"; fi
+
 cat << EOF > 'messy.config'
 indent: auto
 indent-spaces: 2
@@ -174,6 +204,8 @@ tidy -config messy.config -q ${USER_HTML}
 rm messy.config
 
 # GET INFORMATION
+if [ $DEBUG = true ]; then echo "DEBUG: GET INFORMATION"; fi
+
 email=`grep "mailto:" ${CLEAN_HTML} | grep -EiEio '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'`
 phone=`grep "Call +" ${CLEAN_HTML} | sed 's/Call//' | awk '{$1=$1};1'`
 websiteurl=`grep -B2 -A3 -oP '"website_url":"http:\K[^"]+' ${CLEAN_HTML} | awk '!seen[$0]++' | sed 's/[\]//g'`
@@ -244,6 +276,28 @@ streetAddress=`echo $mapInfo | grep -B2 -A3 -oP '"streetAddress"\:"\K[^"]+'`
 addressLocality=`echo $mapInfo | grep -B2 -A3 -oP '"addressLocality"\:"\K[^"]+'`
 
 #### PRINT
+if [ $DEBUG = true ]; then echo "DEBUG: SAVING OUTPUT FILE"; fi
+if [ $DEBUG = true ]; then
+	echo "===== Company Information ======"
+	echo "Company name = $companyName"
+	echo ""
+	echo "Hours = $hours"
+	echo "Address Locality: $addressLocality"
+	echo "Street Address: $streetAddress"
+	echo "Category = $category"
+	echo "Postal Code = $postalCode"
+	echo "State = $state"
+	echo "Email = $email"
+	echo "Phone = $phone"
+	echo "URL 1 = $websiteurl"
+	echo "URL 2 = $websiteurlhttps"
+	echo ""
+	echo "===== Business Description ======"
+	echo "Introduction = $descriptionMain"
+	echo ""
+	echo "Detail description = $descriptionDetail"
+fi
+
 echo "===== Company Information ======" >> ${OUTPUT_FILE}
 echo "Company name = $companyName" >> ${OUTPUT_FILE}
 echo "" >> ${OUTPUT_FILE}
@@ -263,6 +317,7 @@ echo "Introduction = $descriptionMain" >> ${OUTPUT_FILE}
 echo "" >> ${OUTPUT_FILE}
 echo "Detail description = $descriptionDetail" >> ${OUTPUT_FILE}
 
+if [ $DEBUG = true ]; then echo "DEBUG: CONVERTING TO NOTEPAD FORMAT"; fi
 if [ ${WINDOWS_FILE} = true ]; then
 	# Convert UNIX to Win
 	mv ${OUTPUT_FILE} temporary_html.txt
@@ -270,3 +325,4 @@ if [ ${WINDOWS_FILE} = true ]; then
 	rm temporary_html.txt
 fi
 rm ${CLEAN_HTML}
+if [ $DEBUG = true ]; then echo "DEBUG: DONE"; fi
