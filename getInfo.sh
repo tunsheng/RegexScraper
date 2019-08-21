@@ -3,30 +3,36 @@
 ################
 # CHECK PREREQ #
 ################
+basePath=`echo ~`
 
-export PATH=$PATH:~/Documents/Github/userApp/curl-7.65.3_1-win64-mingw/bin/
-export PATH=$PATH:~/Documents/Github/userApp/tidy-5.6.0-vc14-64b/bin/
-export PATH=$PATH:~/Documents/Github/userApp/wget-1.11.4-1/bin/
+# curlPath=$basePath/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/
+# curlPathAlt=$basePath/Documents/cmder/myApp/curl-7.65.3_1-win64-mingw/bin/
+tidyPath=$basePath/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/
+tidyPathAlt=$basePath/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
+wgetPath=$basePath/Documents/cmder/userApp/wget-1.11.4-1/bin/
+wgetPathAlt=$basePath/Documents/cmder/myApp/wget-1.11.4-1/bin/
+export PATH=$PATH:$wgetPath:$wgetPathAlt:$tidyPath:$tidyPathAlt
+
 
 if [ $# -eq 0 ]; then
 		printf '%s\n' "ERROR: try 'sh getInfo.sh --help' for more information" | fold -s
 		exit
 fi
 
-if ! [[ -d ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ ]]; then
-  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ does not exist." | fold -s
-	exit
-fi
-
-if ! [[ -d ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ ]]; then
-  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ does not exist." | fold -s
-	exit
-fi
-
-if ! [[ -d ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ ]]; then
-  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ does not exist." | fold -s
-	exit
-fi
+# if ! [[ -d ~/Documents/cmder/*App/curl-7.65.3_1-win64-mingw/bin/ ]]; then
+#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ does not exist." | fold -s
+# 	exit
+# fi
+#
+# if ! [[ -d ~/Documents/cmder/*App/tidy-5.6.0-vc14-64b/bin/ ]]; then
+#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ does not exist." | fold -s
+# 	exit
+# fi
+#
+# if ! [[ -d ~/Documents/cmder/*App/wget-1.11.4-1/bin/ ]]; then
+#  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ does not exist." | fold -s
+# 	exit
+# fi
 
 #####################
 # DO NOT EDIT BELOW #
@@ -131,7 +137,7 @@ rm -rf ${OUTPUT_FILE}
 if [ ${SKIP_DOWNLOAD} = 'false' ]; then
   echo DOWNLOADING HTML FROM ${FB_LINK}
   rm -rf index.html ${LOG_FILE}
-  wget --no-check-certificate -U "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36" ${FB_LINK} -o ${LOG_FILE}
+  wget --no-check-certificate -U "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36" ${FB_LINK} -o ${LOG_FILE} -O index.html
 fi
 
 if ! [[ -f ${USER_HTML} ]]; then

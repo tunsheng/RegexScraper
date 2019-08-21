@@ -1,4 +1,3 @@
-
 #!/bin/bash -l
 
 # PREREQ
@@ -10,13 +9,14 @@ unzip tidy-5.6.0-vc14-64b.zip
 
 ## DOWNLOAD
 LINKS=(
+# http://ftp.gnu.org/gnu/wget/wget-1.11.4.tar.gz
 http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-bin.zip
 http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-dep.zip
-http://gnuwin32.sourceforge.net/downlinks/libintl-bin-zip.php
-http://gnuwin32.sourceforge.net/downlinks/libintl-dep-zip.php
-http://gnuwin32.sourceforge.net/downlinks/libiconv-bin-zip.php
-http://gnuwin32.sourceforge.net/downlinks/libiconv-dep-zip.php
-http://downloads.sourceforge.net/gnuwin32/openssl-0.9.8h-1-bin.zip
+# http://gnuwin32.sourceforge.net/downlinks/libintl-bin-zip.php
+# http://gnuwin32.sourceforge.net/downlinks/libintl-dep-zip.php
+# http://gnuwin32.sourceforge.net/downlinks/libiconv-bin-zip.php
+# http://gnuwin32.sourceforge.net/downlinks/libiconv-dep-zip.php
+# http://downloads.sourceforge.net/gnuwin32/openssl-0.9.8h-1-bin.zip
 )
 
 LEN=${#LINKS[@]}

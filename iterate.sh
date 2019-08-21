@@ -71,7 +71,8 @@ while read CURRENT_ITEM; do
 		else
 			# USE LINK
       LOG_FILE="log_"${i}".txt"
-			sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CURRENT_ITEM} -o ${OUTPUT_FILE}
+      CLEAN_LINK=`echo ${CURRENT_ITEM} | sed 's/?ref=page_internal//'`
+			sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}
 		fi
 		i=$(( $i+1 ))
 done < ${INPUT_LIST}
