@@ -1,6 +1,13 @@
 # TO RUN
 #    $ powershell -ExecutionPolicy ByPass -File setup.ps1
 
+
+if ($PSVersionTable.PSVersion.ToString() -lt 4.0) {
+    Write-Output ("Please upgrade to Powershell 4.0 by upgrading to Windows 10.")
+    Exit
+}
+
+
 # https://blogs.technet.microsoft.com/dsheehan/2018/10/27/powershell-taking-control-over-ctrl-c/
 # Change the default behavior of CTRL-C so that the script can intercept and use it versus just terminating the script.
 [Console]::TreatControlCAsInput = $True
