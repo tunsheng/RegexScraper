@@ -58,3 +58,7 @@ SETUP
    ```bash
    sh iterate.sh -i SHREK.txt
    ```
+   If you created **list.txt** using Windows' **notepad**, then use this:
+   ```bash
+   sh iterate.sh --win-input -i list.txt
+   ```
