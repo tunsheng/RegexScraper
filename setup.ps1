@@ -139,6 +139,8 @@ if   (Test-Path -Path wget-1.11.4-1-dep/bin) {
 
 if   (Test-Path -Path wget-1.11.4-1-dep) {
         rm -r wget-1.11.4-1-dep
+        mv wget-1.11.4-1-bin wget-1.11.4-1
+        mv -force tidy-5.6.0-vc14-64b/tidy-5.6.0-vc14-64b/* tidy-5.6.0-vc14-64b
 }
 
 

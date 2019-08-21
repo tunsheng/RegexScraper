@@ -4,27 +4,27 @@
 # CHECK PREREQ #
 ################
 
-export PATH=$PATH:~/Documents/cmder/myApp/curl-7.65.3-win64-mingw/bin/
-export PATH=$PATH:~/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
-export PATH=$PATH:~/Documents/cmder/myApp/wget-1.11.4-1/bin/
+export PATH=$PATH:~/Documents/Github/userApp/curl-7.65.3_1-win64-mingw/bin/
+export PATH=$PATH:~/Documents/Github/userApp/tidy-5.6.0-vc14-64b/bin/
+export PATH=$PATH:~/Documents/Github/userApp/wget-1.11.4-1/bin/
 
 if [ $# -eq 0 ]; then
 		printf '%s\n' "ERROR: try 'sh getInfo.sh --help' for more information" | fold -s
 		exit
 fi
 
-if ! [[ -d ~/Documents/cmder/myApp/curl-7.65.3-win64-mingw/bin/ ]]; then
-  printf '%s\n' "ERROR: ~/Documents/cmder/myApp/curl-7.65.3-win64-mingw/bin/ does not exist." | fold -s
+if ! [[ -d ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ ]]; then
+  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/ does not exist." | fold -s
 	exit
 fi
 
-if ! [[ -d ~/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/ ]]; then
-  printf '%s\n' "ERROR: ~/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/ does not exist." | fold -s
+if ! [[ -d ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ ]]; then
+  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ does not exist." | fold -s
 	exit
 fi
 
-if ! [[ -d ~/Documents/cmder/myApp/wget-1.11.4-1/bin/ ]]; then
-  printf '%s\n' "ERROR: ~/Documents/cmder/myApp/wget-1.11.4-1/bin/ does not exist." | fold -s
+if ! [[ -d ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ ]]; then
+  printf '%s\n' "ERROR: ~/Documents/cmder/userApp/wget-1.11.4-1/bin/ does not exist." | fold -s
 	exit
 fi
 
