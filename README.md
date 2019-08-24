@@ -4,6 +4,8 @@ SETUP
 
 #### FOR WINDOWS
 
+
+0. If you are using WINDOWS 10, then follow this link to setup [Windows Subsystem For Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10 "Windows Subsystem For Linux"). You are done with installation.
 1. Copy **setup.ps1** a.k.a windows shell script from the repository  to your **C:\Users\yourusername\Documents** folder.
 2. Run **powershell** from Windows Start Menu.
 3. In the **powershell**, type:
@@ -15,6 +17,7 @@ SETUP
    powershell -ExecutionPolicy ByPass -File setup.ps1
    ```
 5. If everything goes well, then you are done.
+
 
 
 #### FOR macOS & LINUX
