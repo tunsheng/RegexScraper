@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [[ "$OSTYPE" == "msys" ]]; then
   echo "﴾͡๏̯͡๏﴿ O'RLY? You should not be messing with this. ლ(ಠ益ಠლ)"
@@ -29,9 +29,8 @@ echo "=== Task completed. (▀̿Ĺ̯▀̿ ̿)"
 # Final check
 if  ! [[ -d ~/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/ ]]; then
   echo "ლ(ಠ益ಠლ) Why ?!! tidy not found."
+  exit
 fi
-
-
 ### ʕ•ᴥ•ʔ OBSELETE ʕ•ᴥ•ʔ
 # LINKS=(
 # http://downloads.sourceforge.net/gnuwin32/wget-1.11.4-1-bin.zip

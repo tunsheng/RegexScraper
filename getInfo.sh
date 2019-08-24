@@ -1,9 +1,10 @@
-#!/bin/bash -l
+#!/usr/bin/env bash
 
 if [ $# -eq 0 ]; then
 		printf '%s\n' "ERROR: try 'sh getInfo.sh --help' for more information" | fold -s
 		exit
 fi
+
 
 #####################
 # DO NOT EDIT BELOW #
@@ -68,59 +69,36 @@ done
 
 
 # DEFAULT VALUES
-if [ -z ${FB_LINK} ]
-then
-  FB_LINK=https://www.facebook.com/pg/sgairconservicing/about/
-fi
+FB_LINK="${FB_LINK:-https://www.facebook.com/pg/sgairconservicing/about/}"
+OUTPUT_FILE="${OUTPUT_FILE:-business_info.txt}"
+USER_HTML="${USER_HTML:-index.html}"
+CLEAN_HTML="${CLEAN_HTML:-tidy.html}"
+SKIP_DOWNLOAD="${SKIP_DOWNLOAD:-false}"
+LOG_FILE="${LOG_FILE:-log.txt}"
+WINDOWS_FILE="${WINDOWS_FILE:-false}"
+DEBUG="${DEBUG:-false}"
 
-if [ -z ${OUTPUT_FILE} ]
-then
-  OUTPUT_FILE='business_info.txt'
-fi
-
-if [ -z ${USER_HTML} ]
-then
-  USER_HTML='index.html'
-fi
-
-if [ -z ${CLEAN_HTML} ]
-then
-  CLEAN_HTML='tidy.html'
-fi
-
-if [ -z ${SKIP_DOWNLOAD} ]
-then
-  SKIP_DOWNLOAD=false
-fi
-
-if [ -z ${LOG_FILE} ]
-then
-  LOG_FILE='log.txt'
-fi
-
-if [ -z ${WINDOWS_FILE} ]
-then
-  WINDOWS_FILE=false
-fi
-
-if [ -z ${DEBUG} ]
-then
-  DEBUG=false
-fi
 
 if [ $DEBUG = true ]; then echo ; echo "Running getInfo in DEBUG mode"; fi
-################
-# CHECK PREREQ #
-################
+
+######################
+# CHECK FOR PACKAGES #
+######################
 basePath=`echo ~`
 
 # curlPath=$basePath/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/
 # curlPathAlt=$basePath/Documents/cmder/myApp/curl-7.65.3_1-win64-mingw/bin/
-tidyPath=$basePath/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/
-tidyPathAlt=$basePath/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
-wgetPath=$basePath/Documents/cmder/userApp/wget-1.11.4-1/bin/
-wgetPathAlt=$basePath/Documents/cmder/myApp/wget-1.11.4-1/bin/
-export PATH=$PATH:$wgetPath:$wgetPathAlt:$tidyPath:$tidyPathAlt
+if ! tidy --version &>/dev/null; then
+	tidyPath=$basePath/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/
+	tidyPathAlt=$basePath/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
+	export PATH=$PATH:$tidyPath:$tidyPathAlt
+fi
+
+if ! wget --version &>/dev/null; then
+	wgetPath=$basePath/Documents/cmder/userApp/wget-1.11.4-1/bin/
+	wgetPathAlt=$basePath/Documents/cmder/myApp/wget-1.11.4-1/bin/
+export PATH=$PATH:$wgetPath:$wgetPathAlt
+fi
 
 if ! tidy --version &>/dev/null; then
 	printf '%s\n' "(╯°□°)╯︵ tidy not found. Check the path." | fold -s
@@ -130,6 +108,10 @@ fi
 if ! wget --version &>/dev/null; then
   printf '%s\n' "(╯°□°)╯︵ wget not found. Check the path." | fold -s
   exit
+fi
+
+if [  $DEBUG = true  ]; then
+	echo "DEBUG: Your OS is "$OSTYPE
 fi
 
 ###############
@@ -144,6 +126,10 @@ if [ ${SKIP_DOWNLOAD} = 'false' ]; then
   echo DOWNLOADING HTML FROM ${FB_LINK}
   rm -rf index.html ${LOG_FILE}
   wget --no-check-certificate -U "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36" ${FB_LINK} -o ${LOG_FILE} -O index.html
+else
+	if [  $DEBUG = true  ]; then
+		echo "DEBUG: Skipping download"
+	fi
 fi
 
 if ! [[ -f ${USER_HTML} ]]; then
@@ -185,12 +171,16 @@ rm messy.config
 if [ $DEBUG = true ]; then echo "DEBUG: GET INFORMATION"; fi
 
 email=`grep "mailto:" ${CLEAN_HTML} | grep -EiEio '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'`
+if [ $DEBUG = true ]; then echo "DEBUG: email: "$email; fi
 phone=`grep "Call +" ${CLEAN_HTML} | sed 's/Call//' | awk '{$1=$1};1'`
+if [ $DEBUG = true ]; then echo "DEBUG: phone: "$phone; fi
 websiteurl=`grep -B2 -A3 -oP '"website_url":"http:\K[^"]+' ${CLEAN_HTML} | awk '!seen[$0]++' | sed 's/[\]//g'`
 websiteurl="http:"$websiteurl
 websiteurlhttps=`grep -B2 -A3 -oP '"website_url":"https:\K[^"]+' ${CLEAN_HTML} | awk '!seen[$0]++' | sed 's/[\]//g'`
 websiteurlhttps="http:"$websiteurlhttps
+if [ $DEBUG = true ]; then echo "DEBUG: url: "$websiteurl; fi
 category=`grep -B2 -A3 -oP '"category_type"\:"\K[^"]+' ${CLEAN_HTML}`
+if [ $DEBUG = true ]; then echo "DEBUG: Category: "$category; fi
 hours=`awk '/alt="clock"/{
   for (i=1;i<=4;i++) {
     getline;
@@ -201,6 +191,7 @@ hours=`awk '/alt="clock"/{
   }
 }' ${CLEAN_HTML}`
 hours=`echo $hours | grep -B2 -A3 -oP '>\K[^<]+'`
+if [ $DEBUG = true ]; then echo "DEBUG: Hours: "$hours; fi
 aboutTag=`awk '
 function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }
 function rtrim(s) { sub(/[ \t\r\n]+$/, "", s); return s }
@@ -215,18 +206,21 @@ function trim(s) { return rtrim(ltrim(s)); }
   print trim($0);
 };
 ' ${CLEAN_HTML}`
+if [ $DEBUG = true ]; then echo "DEBUG: AboutTag: "$aboutTag; fi
 description=`awk -v tag="$aboutTag" '$0~tag{
   while ($1 !="</div>") {
     print;
     getline;
   }
 }' ${CLEAN_HTML}`
+if [ $DEBUG = true ]; then echo "DEBUG: Description: "$description; fi
 descriptionMain=`echo $description | grep -A2 -B3 -oP "${aboutTag}\K[^<]+"`
 descriptionMain=`echo $descriptionMain | awk '
   function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }
   function rtrim(s) { sub(/[ \t\r\n]+$/, "", s); return s }
   function trim(s) { return rtrim(ltrim(s)); }
   {  print trim($0) };'`
+if [ $DEBUG = true ]; then echo "DEBUG: descriptionMain: "$descriptionMain; fi
 descriptionDetail=`echo $description | sed 's/<a\(.*\)[/]a>//g'`
 descriptionDetail=`echo $descriptionDetail | sed 's/<br>//g'`
 descriptionDetail=`echo $descriptionDetail | sed 's/<[/]span>//g'`
@@ -234,8 +228,9 @@ descriptionDetail=`echo $descriptionDetail | sed 's/\.\.\.//g'`
 descriptionDetail=`echo $descriptionDetail | sed 's/<div[^>]*>//g'`
 descriptionDetail=`echo $descriptionDetail | sed 's/<span[^>]*>//g'`
 descriptionDetail=`echo $descriptionDetail | sed "0,/$descriptionMain/{s/$descriptionMain//}"`
+if [ $DEBUG = true ]; then echo "DEBUG: descriptionDetail: "$descriptionDetail; fi
 companyName=`grep -A2 -B3 -oP '<meta property="og:title" content="\K[^<]+"' ${CLEAN_HTML} | sed 's/"//g'`
-
+if [ $DEBUG = true ]; then echo "DEBUG: Name: "$companyName; fi
 mapInfo=`awk '
   function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }
   function rtrim(s) { sub(/[ \t\r\n]+$/, "", s); return s }
@@ -248,33 +243,39 @@ mapInfo=`awk '
   }
   print trim(prev);
 }' ${CLEAN_HTML}`
+if [ $DEBUG = true ]; then echo "DEBUG: mapInfo: "$mapInfo; fi
 postalCode=`echo $mapInfo | grep -B2 -A3 -oP '"postalCode"\:"\K[^"]+'`
+if [ $DEBUG = true ]; then echo "DEBUG: postalCode: "$postalCode; fi
 state=`echo $mapInfo | grep -B2 -A3 -oP '"addressRegion"\:"\K[^"]+'`
+if [ $DEBUG = true ]; then echo "DEBUG: state: "$state; fi
 streetAddress=`echo $mapInfo | grep -B2 -A3 -oP '"streetAddress"\:"\K[^"]+'`
+if [ $DEBUG = true ]; then echo "DEBUG: streetAddress: "$streetAddress; fi
 addressLocality=`echo $mapInfo | grep -B2 -A3 -oP '"addressLocality"\:"\K[^"]+'`
+if [ $DEBUG = true ]; then echo "DEBUG: addressLocality: "$addressLocality; fi
+
 
 #### PRINT
 if [ $DEBUG = true ]; then echo "DEBUG: SAVING OUTPUT FILE"; fi
-if [ $DEBUG = true ]; then
-	echo "===== Company Information ======"
-	echo "Company name = $companyName"
-	echo ""
-	echo "Hours = $hours"
-	echo "Address Locality: $addressLocality"
-	echo "Street Address: $streetAddress"
-	echo "Category = $category"
-	echo "Postal Code = $postalCode"
-	echo "State = $state"
-	echo "Email = $email"
-	echo "Phone = $phone"
-	echo "URL 1 = $websiteurl"
-	echo "URL 2 = $websiteurlhttps"
-	echo ""
-	echo "===== Business Description ======"
-	echo "Introduction = $descriptionMain"
-	echo ""
-	echo "Detail description = $descriptionDetail"
-fi
+# if [ $DEBUG = true ]; then
+# 	echo "===== Company Information ======"
+# 	echo "Company name = $companyName"
+# 	echo ""
+# 	echo "Hours = $hours"
+# 	echo "Address Locality: $addressLocality"
+# 	echo "Street Address: $streetAddress"
+# 	echo "Category = $category"
+# 	echo "Postal Code = $postalCode"
+# 	echo "State = $state"
+# 	echo "Email = $email"
+# 	echo "Phone = $phone"
+# 	echo "URL 1 = $websiteurl"
+# 	echo "URL 2 = $websiteurlhttps"
+# 	echo ""
+# 	echo "===== Business Description ======"
+# 	echo "Introduction = $descriptionMain"
+# 	echo ""
+# 	echo "Detail description = $descriptionDetail"
+# fi
 
 echo "===== Company Information ======" >> ${OUTPUT_FILE}
 echo "Company name = $companyName" >> ${OUTPUT_FILE}

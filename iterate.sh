@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/usr/bin/env bash
 
 
 ################
@@ -55,26 +55,11 @@ do
 done
 
 # DEFAULT VALUES
-if [ -z ${IS_HTML} ]
-then
-  IS_HTML=false
-fi
+IS_HTML="${IS_HTML:-false}"
+INPUT_LIST="${INPUT_LIST:-list.txt}"
+DEBUG="${DEBUG:-false}"
+WIN_TO_UNIX="${WIN_TO_UNIX:-false}"
 
-if [ -z ${INPUT_LIST} ]
-then
-  INPUT_LIST='list.txt'
-  if [ $DEBUG = true ]; then echo "DEBUG: Using default input list: list.txt"; fi
-fi
-
-if [ -z ${DEBUG} ]
-then
-  DEBUG=false
-fi
-
-if [ -z ${WIN_TO_UNIX} ]
-then
-  WIN_TO_UNIX=false
-fi
 
 ###############
 # MAIN SCRIPT #
@@ -96,9 +81,9 @@ while read CURRENT_ITEM; do
 			# USE HTML
       echo "Processing "${CURRENT_ITEM}" in output file "${OUTPUT_FILE}
       if [ $DEBUG = true ]; then
-			  sh getInfo.sh --debug --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE}
+			  sh getInfo.sh --debug --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE} || exit
       else
-        sh getInfo.sh --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE}
+        sh getInfo.sh --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE} || exit
       fi
 		else
 			# USE LINK
@@ -108,9 +93,9 @@ while read CURRENT_ITEM; do
         printf '%s\n' "DEBUG: Tidy link = ${CLEAN_LINK}" | fold -s
       fi
       if [ $DEBUG = true ]; then
-        sh getInfo.sh --debug --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}
+        sh getInfo.sh --debug --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE} || exit
       else
-			  sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE}
+			  sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE} || exit
       fi
 		fi
     echo "Entry $i completed."
