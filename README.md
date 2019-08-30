@@ -1,4 +1,4 @@
-SETUP
+SETUP Terminal
 =================
 ***NOTE:*** REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 
@@ -34,7 +34,7 @@ SETUP
    ```
 5. If everything goes well, then you are done.
 
- RUNNING
+ Setup Workspace
 =======
 ***NOTE:*** REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 
@@ -45,11 +45,15 @@ SETUP
 1. Create a folder in **C:\Users\yourusername\Documents** folder. For example, name it **ServiceList**.
 2. Copy **iterate.sh, getInfo.sh** to the **C:\Users\yourusername\Documents\ServiceList** folder.
 3. In the **C:\Users\yourusername\Documents\ServiceList** folder, create a list of links that you want in a text file called **list.txt**. Enter all the links that you have in separate lines.
-5. Run **cmder.exe** and go into **C:\Users\yourusername\Documents\ServiceList** folder by typing:
+4. Now proceeed to the relevant **Run with** section.
+
+ Run with cmder
+=======
+1. Run **cmder.exe** and go into **C:\Users\yourusername\Documents\ServiceList** folder by typing:
     ```bash
     cd C:\Users\yourusername\Documents\ServiceList
     ```
-6. Start running by: (assuming u already created a list of links)
+2. Start running by: (assuming u already created a list of links)
    ```bash
    sh iterate.sh -i list.txt
    ```
@@ -65,3 +69,20 @@ SETUP
    ```bash
    sh iterate.sh --win-input -i list.txt
    ```
+   
+ Run with Windows Linus Subsystem
+=======
+  1. Go to your directory
+  ```bash
+    cd mnt/c/Users/yourusername/Documents/ServiceList
+  ```
+  2. Convert DOS formatted script to UNIX compatible script [Optional]:
+  ```bash
+   ./dos2unix.sh iterate.sh
+   ./dos2unix.sh getBusiness.sh
+   ./dos2unix.sh getInfo.pl
+   ```   
+  3. Type the following into your terminal:
+  ```bash
+   ./iterate.sh --win-subsys --input list.txt
+   ``` 
