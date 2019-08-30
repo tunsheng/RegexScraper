@@ -1,3 +1,9 @@
+INTRODUCTION
+======
+
+There are three parts to the installation process **Setup Terminal**, **Setup Workspace** and  **Run with**. 
+
+
 SETUP Terminal
 =================
 ***NOTE:*** REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
@@ -5,7 +11,12 @@ SETUP Terminal
 #### FOR WINDOWS
 
 
-0. If you are using WINDOWS 10, then follow this link to setup [Windows Subsystem For Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10 "Windows Subsystem For Linux"). You are done with installation.
+0. If you are using WINDOWS 10, then follow this link to setup [Windows Subsystem For Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10 "Windows Subsystem For Linux"). Open your terminal, and type:
+   ```bash
+   cd /mnt/c/Users/yourusername/Documents
+   ./setup_win10.sh
+   ```
+   You are done. Skip to the next section.
 1. Copy **setup.ps1** a.k.a windows shell script from the repository  to your **C:\Users\yourusername\Documents** folder.
 2. Run **powershell** from Windows Start Menu.
 3. In the **powershell**, type:
@@ -34,7 +45,8 @@ SETUP Terminal
    ```
 5. If everything goes well, then you are done.
 
- Setup Workspace
+
+Setup Workspace
 =======
 
 ***NOTE:*** For macOS/Linux, replace **C:\Users\yourusername** with just the symbol **~** and **forwardslash (\\)** with **backslash (/)** in the path. Instead of launching **cmder**, you will be launching **terminal**.
@@ -43,8 +55,9 @@ SETUP Terminal
 
 0. Replace the word **yourusername**  with the name of your account whenever u see below.
 1. Create a folder in **C:\Users\yourusername\Documents** folder. For example, name it **ServiceList**.
-2. Copy **iterate.sh, getInfo.sh** to the **C:\Users\yourusername\Documents\ServiceList** folder.
-3. In the **C:\Users\yourusername\Documents\ServiceList** folder, create a list of links that you want in a text file called **list.txt**. Enter all the links that you have in separate lines.
+2. Copy **iterate.sh, getBusiness.sh, getInfo.pl** to the **C:\Users\yourusername\Documents\ServiceList** folder.
+3. Create a list of links that you want in a text file called **list.txt** in the **C:\Users\yourusername\Documents\ServiceList** folder.
+   Enter all the links that you have in separate lines.
 4. Now proceeed to the relevant **Run with** section.
 
  Run with cmder
