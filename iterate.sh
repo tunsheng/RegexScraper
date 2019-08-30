@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 
-################
-# CHECK PREREQ #
-################
+#==============
+# CHECK PREREQ
+#==============
 
 if ! [[ -f "getInfo.sh" ]]; then
   echo "ERROR: getInfo.sh does not exist."
@@ -50,6 +50,9 @@ do
     --win-input )
       WIN_TO_UNIX=true
       ;;
+    --win-subsys )
+			WIN_SUBSYS=true
+      ;;
   esac
   shift
 done
@@ -59,11 +62,11 @@ IS_HTML="${IS_HTML:-false}"
 INPUT_LIST="${INPUT_LIST:-list.txt}"
 DEBUG="${DEBUG:-false}"
 WIN_TO_UNIX="${WIN_TO_UNIX:-false}"
+WIN_SUBSYS="${WIN_SUBSYS:-false}"
 
-
-###############
-# MAIN SCRIPT #
-###############
+#==============
+# MAIN SCRIPT
+#==============
 if [ ${WIN_TO_UNIX} = 'true' ]; then
   mv ${INPUT_LIST} windows_input.txt
   perl -pe '$_=~s#\r\n#\n#' < windows_input.txt > ${INPUT_LIST}
@@ -79,11 +82,15 @@ while read CURRENT_ITEM; do
 		OUTPUT_FILE="business_info_"${i}".txt"
 		if [ ${IS_HTML} = 'true' ]; then
 			# USE HTML
-      echo "Processing "${CURRENT_ITEM}" in output file "${OUTPUT_FILE}
+      echo "Processing output file "${OUTPUT_FILE}
       if [ $DEBUG = true ]; then
-			  sh getInfo.sh --debug --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE} || exit
+			  sh getBusiness.sh --debug --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE} || exit
       else
-        sh getInfo.sh --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE} || exit
+        if [ ${WIN_SUBSYS} = true ]; then
+          bash getBusiness.sh --skip-download --win-subsys --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE} || exit
+        else
+          sh getBusiness.sh --skip-download --windows --input ${CURRENT_ITEM} -o ${OUTPUT_FILE} || exit
+        fi
       fi
 		else
 			# USE LINK
@@ -93,10 +100,14 @@ while read CURRENT_ITEM; do
         printf '%s\n' "DEBUG: Tidy link = ${CLEAN_LINK}" | fold -s
       fi
       if [ $DEBUG = true ]; then
-        sh getInfo.sh --debug --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE} || exit
+        bash getBusiness.sh --debug --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE} || exit
       else
-			  sh getInfo.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE} || exit
-      fi
+        if [ ${WIN_SUBSYS} = true ]; then
+          bash getBusiness.sh --log ${LOG_FILE} --win-subsys --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE} || exit
+        else
+          sh getBusiness.sh --log ${LOG_FILE} --windows --set-link ${CLEAN_LINK} -o ${OUTPUT_FILE} || exit
+        fi
+			fi
 		fi
     echo "Entry $i completed."
 		i=$(( $i+1 ))

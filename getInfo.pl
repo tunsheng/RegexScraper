@@ -2,8 +2,6 @@
 use lib "lib/HTML";
 use strict;
 use warnings;
-# use TreeBuilder;
-# use XPath;
 use Getopt::Long;
 
 
@@ -254,10 +252,12 @@ while (my $line=<$fh>) {
   }
 }
 
-($main_description = $1) if ($description =~ /($aboutTag[\s\w\d]+$aboutTag)/);
-($detail_description = $1) if ($description =~ /($main_description.+)/);
+if (defined $description) {
+  $main_description='';
+  ($main_description = $1) if ($description =~ /($aboutTag.+$aboutTag)/);
+  ($detail_description = $description) =~ s/$main_description//g;
+}
 if (defined $detail_description) {
-  $detail_description =~ s/$main_description//g;
   $detail_description =~ s/^\s+//g;
   $detail_description =~ s/<span class="text_exposed_hide">.+<span class="text_exposed_show">//g;
   $detail_description =~ s/<div[\s\w\d="_]+>//g;
@@ -274,8 +274,6 @@ if (defined $main_description) {
   $main_description =~ s/\s+$//g;
 }
 close $fh;
-
-
 
 
 #=== Saving to output

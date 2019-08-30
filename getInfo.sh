@@ -148,7 +148,7 @@ fi
 
 if [ -z "${TIDY_EXE}" ]; then
 	TIDY_EXE='tidy'
-	if ! "${TIDY_EXE}" --version &>/dev/null; then
+	if ! tidy --version &>/dev/null; then
 		printf '%s\n' "(╯°□°)╯︵ tidy not found. Check the path." | fold -s
 		printf '%s\n' "Remember to use --win-subsys flag for linux subsystem." | fold -s
 		exit
