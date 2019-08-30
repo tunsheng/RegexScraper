@@ -8,15 +8,17 @@ SETUP Terminal
 =================
 ***NOTE:*** REPLACE *yourusername*  WITH THE NAME OF YOUR ACCOUNT.
 
-#### FOR WINDOWS
-
-
-0. If you are using WINDOWS 10, then follow this link to setup [Windows Subsystem For Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10 "Windows Subsystem For Linux"). Open your terminal, and type:
+#### FOR WINDOWS 10
+0. If you are using WINDOWS 10, then follow this link to setup [Windows Subsystem For Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10 "Windows Subsystem For Linux").
+1. Copy **setup_win10.ps1** from **Installer** folder to your **C:\Users\yourusername\Documents** folder.
+2. Run **powershell** from Windows Start Menu. In the **powershell**, type:
    ```bash
-   cd /mnt/c/Users/yourusername/Documents
-   ./setup_win10.sh
+   cd C:\Users\yourusername\Documents
+   powershell -ExecutionPolicy ByPass -File setup_win10.ps1
    ```
-   You are done. Skip to the next section.
+   You are done. Skip to **Setup Workspace** section.
+   
+#### FOR WINDOWS [alternative]
 1. Copy **setup.ps1** a.k.a windows shell script from the repository  to your **C:\Users\yourusername\Documents** folder.
 2. Run **powershell** from Windows Start Menu.
 3. In the **powershell**, type:
