@@ -40,28 +40,35 @@ do
       exit
       ;;
     --clean-input )
-      CLEAN_HTML=`echo $2 | awk '{$1=$1};1'`
+      CLEAN_HTML=`echo $2 | "${AWK_EXE}" '{$1=$1};1'`
       ;;
 		--debug )
 			DEBUG=true
 			;;
 		--input | -i)
-			USER_HTML=`echo $2 | awk '{$1=$1};1'`
+			USER_HTML=`echo $2 | "${AWK_EXE}" '{$1=$1};1'`
 			;;
 		--log )
-			LOG_FILE=`echo $2 | awk '{$1=$1};1'`
+			LOG_FILE=`echo $2 | "${AWK_EXE}" '{$1=$1};1'`
 			;;
 		--output | -o )
-      OUTPUT_FILE=`echo $2 | awk '{$1=$1};1'`
+      OUTPUT_FILE=`echo $2 | "${AWK_EXE}" '{$1=$1};1'`
       ;;
     --skip-download )
       SKIP_DOWNLOAD=true
       ;;
 		--set-link )
-			FB_LINK=`echo $2 | awk '{$1=$1};1'`
+			FB_LINK=`echo $2 | "${AWK_EXE}" '{$1=$1};1'`
 			;;
 		--windows )
 			WINDOWS_FILE=true
+			;;
+		--win-subsys )
+			WIN_SUBSYS=true
+			;;
+		--win-awk )
+			# THIS FLAG IS NOT USABLE
+			WIN_AWK=false
 			;;
   esac
   shift
@@ -77,7 +84,10 @@ SKIP_DOWNLOAD="${SKIP_DOWNLOAD:-false}"
 LOG_FILE="${LOG_FILE:-log.txt}"
 WINDOWS_FILE="${WINDOWS_FILE:-false}"
 DEBUG="${DEBUG:-false}"
-
+WIN_SUBSYS="${WIN_SUBSYS:-false}"
+WIN_AWK="${WIN_AWK:-false}"
+TIDY_EXE=''
+AWK_EXE=''
 
 if [ $DEBUG = true ]; then echo ; echo "Running getInfo in DEBUG mode"; fi
 
@@ -88,6 +98,27 @@ basePath=`echo ~`
 
 # curlPath=$basePath/Documents/cmder/userApp/curl-7.65.3_1-win64-mingw/bin/
 # curlPathAlt=$basePath/Documents/cmder/myApp/curl-7.65.3_1-win64-mingw/bin/
+
+if [ ${WIN_SUBSYS} = true ]; then
+	USERNAME=`pwd | grep -oP '/mnt/c/Users/\K[^/]+' | sed -e 's/ /\\ /g'`
+	TIDY_EXE="/mnt/c/Users/${USERNAME}/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/tidy.exe"
+	echo ${TIDY_EXE}
+	if [ ! -f "${TIDY_EXE}" ]; then
+		echo ERROR: tidy.exe does not exist.
+		exit
+	fi
+fi
+
+if [ ${WIN_AWK} = true ]; then
+	USERNAME=`pwd | grep -oP '/mnt/c/Users/\K[^/]+' | sed -e 's/ /\\ /g'`
+	AWK_EXE="/mnt/c/Users/${USERNAME}/Documents/ServiceList/gawk-5.0.1-w32-bin/bin/gawk.exe"
+	echo ${AWK_EXE}
+	if [ ! -f "${AWK_EXE}" ]; then
+		echo ERROR: awk.exe does not exist.
+		exit
+	fi
+fi
+
 if ! tidy --version &>/dev/null; then
 	tidyPath=$basePath/Documents/cmder/userApp/tidy-5.6.0-vc14-64b/bin/
 	tidyPathAlt=$basePath/Documents/cmder/myApp/tidy-5.6.0-vc14-64b/bin/
@@ -100,9 +131,28 @@ if ! wget --version &>/dev/null; then
 export PATH=$PATH:$wgetPath:$wgetPathAlt
 fi
 
-if ! tidy --version &>/dev/null; then
-	printf '%s\n' "(╯°□°)╯︵ tidy not found. Check the path." | fold -s
-exit
+if [ -z "${AWK_EXE}" ]; then
+	AWK_EXE='awk'
+	if ! "${AWK_EXE}" --version &>/dev/null; then
+		echo "ERROR: Please install AWK"
+		exit
+	else
+		VERSION_AWK=`"${AWK_EXE}" --version 2>&1 | "${AWK_EXE}" '/GNU Awk/{print $3}' | sed -e 's/,//g'`
+		NUM_AWK=`echo ${VERSION_AWK} | sed -e 's/\.//g'`
+		if [ ${NUM_AWK} -lt 421 ]; then
+			printf '%s\n' "ERROR: Your AWK version is ${VERSION_AWK}. Please updagrade to version 4.2.1 or later" | fold -s
+			# wget http://ftp.gnu.org/gnu/gawk/gawk-4.2.1.tar.gz
+		fi
+	fi
+fi
+
+if [ -z "${TIDY_EXE}" ]; then
+	TIDY_EXE='tidy'
+	if ! "${TIDY_EXE}" --version &>/dev/null; then
+		printf '%s\n' "(╯°□°)╯︵ tidy not found. Check the path." | fold -s
+		printf '%s\n' "Remember to use --win-subsys flag for linux subsystem." | fold -s
+		exit
+	fi
 fi
 
 if ! wget --version &>/dev/null; then
@@ -119,7 +169,10 @@ fi
 ###############
 
 # Remove old files
-rm -rf ${OUTPUT_FILE}
+if [ -f ${OUTPUT_FILE} ]; then
+	echo "Removing old output file"
+	rm -rf ${OUTPUT_FILE}
+fi
 
 # DOWNLOAD HTML
 if [ ${SKIP_DOWNLOAD} = 'false' ]; then
@@ -164,7 +217,8 @@ uppercase-attributes: no
 char-encoding: utf8
 EOF
 
-tidy -config messy.config -q ${USER_HTML}
+
+"${TIDY_EXE}" -config messy.config -q ${USER_HTML}
 rm messy.config
 
 # GET INFORMATION
@@ -172,16 +226,16 @@ if [ $DEBUG = true ]; then echo "DEBUG: GET INFORMATION"; fi
 
 email=`grep "mailto:" ${CLEAN_HTML} | grep -EiEio '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b'`
 if [ $DEBUG = true ]; then echo "DEBUG: email: "$email; fi
-phone=`grep "Call +" ${CLEAN_HTML} | sed 's/Call//' | awk '{$1=$1};1'`
+phone=`grep "Call +" ${CLEAN_HTML} | sed 's/Call//' | "${AWK_EXE}" '{$1=$1};1'`
 if [ $DEBUG = true ]; then echo "DEBUG: phone: "$phone; fi
-websiteurl=`grep -B2 -A3 -oP '"website_url":"http:\K[^"]+' ${CLEAN_HTML} | awk '!seen[$0]++' | sed 's/[\]//g'`
+websiteurl=`grep -B2 -A3 -oP '"website_url":"http:\K[^"]+' ${CLEAN_HTML} | "${AWK_EXE}" '!seen[$0]++' | sed 's/[\]//g'`
 websiteurl="http:"$websiteurl
-websiteurlhttps=`grep -B2 -A3 -oP '"website_url":"https:\K[^"]+' ${CLEAN_HTML} | awk '!seen[$0]++' | sed 's/[\]//g'`
+websiteurlhttps=`grep -B2 -A3 -oP '"website_url":"https:\K[^"]+' ${CLEAN_HTML} | "${AWK_EXE}" '!seen[$0]++' | sed 's/[\]//g'`
 websiteurlhttps="http:"$websiteurlhttps
 if [ $DEBUG = true ]; then echo "DEBUG: url: "$websiteurl; fi
 category=`grep -B2 -A3 -oP '"category_type"\:"\K[^"]+' ${CLEAN_HTML}`
 if [ $DEBUG = true ]; then echo "DEBUG: Category: "$category; fi
-hours=`awk '/alt="clock"/{
+hours=`"${AWK_EXE}" '/alt="clock"/{
   for (i=1;i<=4;i++) {
     getline;
   }
@@ -192,7 +246,7 @@ hours=`awk '/alt="clock"/{
 }' ${CLEAN_HTML}`
 hours=`echo $hours | grep -B2 -A3 -oP '>\K[^<]+'`
 if [ $DEBUG = true ]; then echo "DEBUG: Hours: "$hours; fi
-aboutTag=`awk '
+aboutTag=`"${AWK_EXE}" '
 function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }
 function rtrim(s) { sub(/[ \t\r\n]+$/, "", s); return s }
 function trim(s) { return rtrim(ltrim(s)); }
@@ -207,7 +261,7 @@ function trim(s) { return rtrim(ltrim(s)); }
 };
 ' ${CLEAN_HTML}`
 if [ $DEBUG = true ]; then echo "DEBUG: AboutTag: "$aboutTag; fi
-description=`awk -v tag="$aboutTag" '$0~tag{
+description=`"${AWK_EXE}" -v tag="$aboutTag" '$0~tag{
   while ($1 !="</div>") {
     print;
     getline;
@@ -215,7 +269,7 @@ description=`awk -v tag="$aboutTag" '$0~tag{
 }' ${CLEAN_HTML}`
 if [ $DEBUG = true ]; then echo "DEBUG: Description: "$description; fi
 descriptionMain=`echo $description | grep -A2 -B3 -oP "${aboutTag}\K[^<]+"`
-descriptionMain=`echo $descriptionMain | awk '
+descriptionMain=`echo $descriptionMain | "${AWK_EXE}" '
   function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }
   function rtrim(s) { sub(/[ \t\r\n]+$/, "", s); return s }
   function trim(s) { return rtrim(ltrim(s)); }
@@ -231,7 +285,7 @@ descriptionDetail=`echo $descriptionDetail | sed "0,/$descriptionMain/{s/$descri
 if [ $DEBUG = true ]; then echo "DEBUG: descriptionDetail: "$descriptionDetail; fi
 companyName=`grep -A2 -B3 -oP '<meta property="og:title" content="\K[^<]+"' ${CLEAN_HTML} | sed 's/"//g'`
 if [ $DEBUG = true ]; then echo "DEBUG: Name: "$companyName; fi
-mapInfo=`awk '
+mapInfo=`"${AWK_EXE}" '
   function ltrim(s) { sub(/^[ \t\r\n]+/, "", s); return s }
   function rtrim(s) { sub(/[ \t\r\n]+$/, "", s); return s }
   function trim(s) { return rtrim(ltrim(s)); }

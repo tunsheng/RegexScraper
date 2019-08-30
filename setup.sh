@@ -17,6 +17,36 @@ if ! curl --version &>/dev/null; then
   exit
 fi
 
+if ! wget --version &>/dev/null; then
+  echo "(╯°□°)╯︵ wget does not exist."
+  printf '%s\n' "Download wget" | fold -s
+  exit
+fi
+
+## DOWNLOAD AWK
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  if ! awk --version &>/dev/null; then
+    echo "No AWK detected. Installing AWK"
+  else
+    VERSION_AWK=`"${AWK_EXE}" --version 2>&1 | "${AWK_EXE}" '/GNU Awk/{print $3}' | sed -e 's/,//g'`
+    NUM_AWK=`echo ${VERSION_AWK} | sed -e 's/\.//g'`
+    exit
+    if [ ${NUM_AWK} -lt 421 ]; then
+      printf '%s\n' "WARNING: Your AWK version is ${VERSION_AWK} is obselete" | fold -s
+      echo "Installing AWK 4.2.1"
+    fi
+  fi
+
+  sudo apt-get update
+  sudo apt-get install gcc
+  wget http://ftp.gnu.org/gnu/gawk/gawk-4.2.1.tar.gz
+  tar -xvf gawk-4.2.1.tar.gz
+  cd gawk-4.2.1
+  ./configure
+  sudo make install
+fi
+
+
 ## DOWNLOAD TIDY HTML
 echo "Start installing tidy."
 cd ~/Documents/
