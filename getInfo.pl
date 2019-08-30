@@ -87,12 +87,33 @@ if ($debug) {
 #============
 # Main Script
 #============
-my $fh;
-open $fh, '<', $clean_input or die "Cannot open $clean_input: $!\n";
+
+# Main information
+my $business_name;
+my $category;
+my $hours;
 my $email;
 my $phone;
 my $unsecured_link;
 my $secured_link;
+my $street_address;
+my $postal_code;
+my $address_region;
+my $address_locality;
+my $main_description;
+my $detail_description;
+
+# Local variables
+my $fh;
+my $flag;
+my $print_flag;
+my $description;
+my $aboutTag;
+my $counter;
+
+
+#=== Search for email, category, links, name, phone
+open($fh, '<', $clean_input) or die "Cannot open $clean_input: $!\n";
 while (my $line=<$fh>) {
   if ($line =~ /mailto:/) {
     ($email = $1) if ( $line =~ /([^:]+@[^?]+)/ );
@@ -114,13 +135,24 @@ while (my $line=<$fh>) {
     $unsecured_link  =~ s/^\s+//g;
     $unsecured_link  =~ s/\s+$//g;
   }
+  if ($line =~ /"category_type":"/) {
+    ($category = $1) if ( $line =~ /("category_type":"[^"]+)/ );
+    if (defined $category) {
+      $category =~ s/"category_type":"//g;
+      $category =~ s/_/ /g;
+    }
+  }
+  if ($line =~ /<meta property="og:title" content/) {
+    ($business_name = $1) if ( $line =~ /(<meta property="og:title" content="[^"]+)/ );
+    $business_name =~ s/<meta property="og:title" content="//g;
+  }
 }
 
-open $fh, '<', $clean_input or die "Cannot open $clean_input: $!\n";
-my $postal_code;
-my $address_region;
-my $street_address;
-my $address_locality;
+
+
+
+#=== Search for address
+open($fh, '<', $clean_input) or die "Cannot open $clean_input: $!\n";
 while (my $line=<$fh>) {
   if ($line =~ /postalCode/) {
     ($postal_code = $1) if ( $line =~ /(postalCode":"[^"]+)/ );
@@ -135,13 +167,152 @@ while (my $line=<$fh>) {
   }
 }
 
-if ($debug) {
-  (defined $phone)          ? print "Phone: $phone \n" : print "No\n";
-  (defined $email)          ? print "Email: $email \n" : print "No\n";
-  (defined $secured_link)   ? print "HTTPS: $secured_link \n" : print "No\n";
-  (defined $unsecured_link) ? print "HTTP: $unsecured_link \n" : print "No\n";
-  (defined $street_address)   ? print "Stree address: $street_address\n": print "No\n";
-  (defined $postal_code)      ? print "Postal code: $postal_code\n" : print "No \n";
-  (defined $address_region)   ? print "Address region: $address_region\n": print "No\n";
-  (defined $address_locality) ? print "Address locality: $address_locality\n": print "No\n";
+
+#=== Search for business hours
+$flag=0;
+$print_flag=0;
+$counter=0;
+open($fh, '<', $clean_input) or die "Cannot open $clean_input: $!\n";
+while (my $line=<$fh>) {
+  if ($line =~ /alt="clock"/) {
+    $flag=1;
+    next;
+  }
+  if ($flag<=3 && $flag > 0) {
+    $flag+=1;
+    next;
+  }
+  if ($flag>3) {
+    $print_flag=1;
+  }
+  if ($print_flag==1) {
+    if ($line =~ /<\/div>/ or $counter > 20) {
+      $print_flag=0;
+      if ($counter > 20) {
+        print "ERROR: Search for hours hit max iter.\n"
+      }
+      last;
+    } else {
+      my $temp=$line;
+      $temp =~ s/^\s+//g;
+      $temp =~ s/\s+$//g;
+      $hours.=$temp;
+      $counter+=1;
+    }
+  }
 }
+
+if (defined $hours) {
+  ($hours = $1) if $hours =~ /(>.+<)/;
+  $hours =~ s/>//g;
+  $hours =~ s/<//g;
+}
+
+
+#=== Search for business description
+open($fh, '<', $clean_input) or die "Cannot open $clean_input: $!\n";
+$flag=0;
+$print_flag=0;
+while (my $line=<$fh>) {
+  if ($line =~ /MORE INFO/) {
+    $flag=1;
+    next;
+  }
+  my $search;
+  if ($flag==1) {
+    if ($line =~/About/) {
+      $flag=2;
+      next;
+    }
+  }
+  if ($flag==2) { # Skip twice
+    $flag+=1;
+    next;
+  }
+  if ($flag==3) { # Get tag
+    $flag+=1;
+    $aboutTag=$line;
+    $aboutTag  =~ s/^\s+//g;
+    $aboutTag  =~ s/\s+$//g;
+  }
+  if (defined $aboutTag) {
+    if (not $print_flag) {
+      if ($line =~ /$aboutTag/) {
+        $print_flag=1;
+      }
+    }
+    if ($print_flag==1) {
+      if ($line =~ /<\/div>/) {
+        $print_flag=0;
+      } else {
+        my $temp=$line;
+        $temp =~ s/^\s+//g;
+        $temp =~ s/\s+$//g;
+        $description.=$temp;
+      }
+    }
+  }
+}
+
+($main_description = $1) if ($description =~ /($aboutTag[\s\w\d]+$aboutTag)/);
+($detail_description = $1) if ($description =~ /($main_description.+)/);
+if (defined $detail_description) {
+  $detail_description =~ s/$main_description//g;
+  $detail_description =~ s/^\s+//g;
+  $detail_description =~ s/<span class="text_exposed_hide">.+<span class="text_exposed_show">//g;
+  $detail_description =~ s/<div[\s\w\d="_]+>//g;
+  $detail_description =~ s/<br>//g;
+  $detail_description =~ s/<\/br>//g;
+  $detail_description =~ s/<a class=.+a>//g;
+  $detail_description =~ s/<\/a>//g;
+  $detail_description =~ s/<span class="text_exposed_hide"><span class="text_exposed_link">//g;
+  $detail_description =~ s/<\/span>//g;
+}
+if (defined $main_description) {
+  $main_description =~ s/$aboutTag//g;
+  $main_description =~ s/^\s+//g;
+  $main_description =~ s/\s+$//g;
+}
+close $fh;
+
+
+
+
+#=== Saving to output
+if ($debug) {
+  print "=== Company Information ===\n";
+  (defined $business_name)  ? print "Business Name: $business_name\n" : print "No business name.\n";
+  (defined $hours)          ? print "Business Hours: $hours\n" : print "No business hours.\n";
+  (defined $category)       ? print "Category: $category\n" : print "No Category.\n";
+  (defined $phone)          ? print "Phone: $phone \n" : print "No phone number.\n";
+  (defined $email)          ? print "Email: $email \n" : print "No email.\n";
+  (defined $secured_link)   ? print "HTTPS: $secured_link \n" : print "No secured link.\n";
+  (defined $unsecured_link) ? print "HTTP: $unsecured_link \n" : print "No unsecured link.\n";
+  (defined $street_address)   ? print "Stree address: $street_address\n": print "No street address.\n";
+  (defined $postal_code)      ? print "Postal code: $postal_code\n" : print "No postal code.\n";
+  (defined $address_region)   ? print "Address region: $address_region\n": print "No address region.\n";
+  (defined $address_locality) ? print "Address locality: $address_locality\n": print "No address locality\n";
+  print "\n=== Business Description ===\n";
+  (defined $main_description) ? print "Main Description: \n $main_description\n": print "No business description.\n";
+  (defined $detail_description) ? print "Detail Description:\n $detail_description\n": print "No detail business description.\n";
+}
+
+open($fh, '>', $output) or die "Could not open file '$output' $!";
+if (defined $output) {
+  print $fh "=== Company Information ===\n";
+  (defined $business_name)  ? print $fh "Business Name: $business_name\n" : print "No business name.\n";
+  (defined $hours)          ? print $fh "Business Hours: $hours\n" : print "No business hours.\n";
+  (defined $category)       ? print $fh "Category: $category\n" : print "No Category.\n";
+  (defined $phone)          ? print $fh "Phone: $phone\n" : print "No phone number.\n";
+  (defined $email)          ? print $fh "Email: $email\n" : print "No email.\n";
+  (defined $secured_link)   ? print $fh "HTTPS: $secured_link\n" : print "No secured link.\n";
+  (defined $unsecured_link) ? print $fh "HTTP: $unsecured_link\n" : print "No unsecured link.\n";
+  (defined $street_address)   ? print $fh "Stree address: $street_address\n": print "No street address.\n";
+  (defined $postal_code)      ? print $fh "Postal code: $postal_code\n" : print "No postal code.\n";
+  (defined $address_region)   ? print $fh "State: $address_region\n": print "No address region.\n";
+  (defined $address_locality) ? print $fh "City: $address_locality\n": print "No address locality\n";
+  print $fh "\n=== Business Description ===\n";
+  (defined $main_description) ? print $fh "Main Description: \n $main_description\n": print "No business description.\n";
+  (defined $detail_description) ? print $fh "Detail Description:\n $detail_description\n": print "No detail business description.\n";
+}
+close $fh;
