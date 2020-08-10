@@ -85,7 +85,7 @@ Setup Workspace
    sh iterate.sh --win-input --input list.txt
    ```
    
- Run with Windows Linus Subsystem
+ Run with Windows Linux Subsystem
 =======
   1. Open your linux terminal. Go to your directory by typing the following into your terminal.
   ```bash
